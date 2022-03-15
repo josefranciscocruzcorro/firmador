@@ -63,7 +63,8 @@ class Firmar
             if(!openssl_pkcs12_read($this->archivo,$this->certificados,$this->p12_pass)){
                 echo "Error al intentar obtener los certificados.";
             }else{
-                
+                //$orivkey = null;
+                //$publkey = null;
                 if (!$this->privateKey = openssl_pkey_get_private($this->certificados['pkey'],$this->p12_pass)) {
                     # code...
                     echo "Error al intentar obtener la clave privada.";
@@ -73,6 +74,11 @@ class Firmar
                         # code...
                         echo "Error al intentar obtener la clave pública.";
                     }else{
+
+                        //$this->public_key = openssl_pkey_get_details($publkey)['key'];
+                        //$this->privateKey = openssl_pkey_get_details($orivkey)['key'];
+
+
                         $x509cert = openssl_x509_read($this->certificados['cert']);
                         $certData = openssl_x509_parse($x509cert);
                         $this->certificate = $x509cert;
@@ -82,6 +88,17 @@ class Firmar
                 }                
             }
         }
+    }
+
+    public function getPublicPem()
+    {
+        $publicPEM = "";
+        openssl_x509_export($this->certificate, $publicPEM);
+        $publicPEM = str_replace("-----BEGIN CERTIFICATE-----", "", $publicPEM);
+        $publicPEM = str_replace("-----END CERTIFICATE-----", "", $publicPEM);
+        $publicPEM = str_replace("\n", "", $publicPEM);
+        $publicPEM = wordwrap($publicPEM, $this->config['wordwrap'], "\n", true);
+        return $publicPEM;
     }
 
     public function generarId()
@@ -152,7 +169,7 @@ class Firmar
 
             $exponent = $this->getExponent();
 
-            $publicPEM = $this->public_key;
+            $publicPEM = $this->getPublicPem();
 
             $kInfo = '<ds:KeyInfo Id="Certificate' . $this->certificateID . '">' . "\n" .
                 '<ds:X509Data>' . "\n" .
@@ -240,7 +257,7 @@ class Firmar
 
                 // guardar documento firmado
                 try {
-                    $respuesta = $xmlSigned;
+                    $respuesta = $xml;
                     
                     echo $xml;
                 } catch (Exception $ex) {
