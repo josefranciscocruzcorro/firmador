@@ -70,10 +70,10 @@ class Firmar
                     echo "Error al intentar obtener la clave privada.";
                 } else {
                     # code...
-                    if (!$this->public_key = openssl_pkey_get_public($this->certificados['cert'])) {
+                    /*if (!$this->public_key = openssl_pkey_get_public($this->certificados['cert'])) {
                         # code...
                         echo "Error al intentar obtener la clave pública.";
-                    }else{
+                    }else{*/
 
                         //$this->public_key = openssl_pkey_get_details($publkey)['key'];
                         //$this->privateKey = openssl_pkey_get_details($orivkey)['key'];
@@ -84,7 +84,9 @@ class Firmar
                         $this->certificate = $x509cert;
                         $this->certData = $certData;
 
-                    }
+                        $this->public_key = openssl_get_publickey($this->certificate);
+
+                    //}
                 }                
             }
         }
@@ -259,7 +261,7 @@ class Firmar
                 try {
                     $respuesta = $xml;
                     
-                    echo $xml;
+                    //echo $xml;
                 } catch (Exception $ex) {
                     $respuesta = array('error' => true, 'mensaje' => 'el documento fue firmado exitosamente pero no pudo ser guardado, ' . $ex->getMessage());
                 }
