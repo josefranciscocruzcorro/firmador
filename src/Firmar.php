@@ -162,8 +162,10 @@ class Firmar
         try {
             $pfx =  $this->config['file'];
             $password = $this->config['pass'];
-            $preruta = explode(substr($pfx,-18,14),$pfx);
-            $nombreKey = $preruta[0] . substr($pfx,-18,14) . ".pem";
+            $preruta = explode('/',$pfx);
+            $prenombre = $preruta[count($preruta) - 1];
+            $preruta = explode($prenombre,$pfx);
+            $nombreKey = $preruta[0] . $prenombre . ".pem";
 
             if (!file_exists($nombreKey))
             {
