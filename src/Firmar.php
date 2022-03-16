@@ -162,7 +162,8 @@ class Firmar
         try {
             $pfx =  $this->config['file'];
             $password = $this->config['pass'];
-            $nombreKey = substr($pfx,-3) . ".pem";
+            $preruta = explode(substr($pfx,-18,14),$pfx);
+            $nombreKey = $preruta[0] . substr($pfx,-18,14) . ".pem";
 
             if (!file_exists($nombreKey))
             {
@@ -390,7 +391,7 @@ class Firmar
                 // guardar documento firmado
                 try {
                     //file_put_contents($docFirmados . DIRECTORY_SEPARATOR . $this->claveAcceso . '.xml', $xmlSigned);
-                    $respuesta = $xml;
+                    $respuesta = $xmlSigned;
                 } catch (Exception $ex) {
                     $respuesta = array('error' => true, 'mensaje' => 'el documento fue firmado exitosamente pero no pudo ser guardado, ' . $ex->getMessage());
                 }
