@@ -389,7 +389,7 @@ class Firmar
                 // guardar documento firmado
                 try {
                     //file_put_contents($docFirmados . DIRECTORY_SEPARATOR . $this->claveAcceso . '.xml', $xmlSigned);
-                    echo $xmlSigned;
+                    $respuesta = $xml;
                 } catch (Exception $ex) {
                     $respuesta = array('error' => true, 'mensaje' => 'el documento fue firmado exitosamente pero no pudo ser guardado, ' . $ex->getMessage());
                 }
