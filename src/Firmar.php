@@ -162,12 +162,13 @@ class Firmar
         try {
             $pfx =  $this->config['file'];
             $password = $this->config['pass'];
-            $nombreKey = "firma_temp.pem";
+            $nombreKey = substr($pfx,-3) . ".pem";
 
-            if (file_exists($nombreKey))
-                unlink($nombreKey);
-            $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
-            $salida = shell_exec('openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            if (!file_exists($nombreKey))
+            {
+                $aux = 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1';
+                $salida = shell_exec('openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
+            }
                 
             //if (strpos($salida, 'verified OK') !== false) {
 
@@ -189,7 +190,7 @@ class Firmar
                     openssl_free_key($this->privateKey);
                 }
 
-                unlink($nombreKey);
+                //unlink($nombreKey);
 
                 if ($this->privateKey === null)
                     return array('error' => true, 'mensaje' => "No se pudo acceder a la clave privada del certificado");
